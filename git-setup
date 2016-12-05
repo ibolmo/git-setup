@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ ! -d "./.git" ]; then
+  git init
+fi
+
+default="$(git config user.email)"
+read -e -p "Email? [$default]: " EMAIL
+[ -z "${EMAIL}" ] && EMAIL="$default"
+git config user.email $EMAIL
+
+default='~/.ssh/id_rsa'
+read -e -p "ssh key? [$default]: " KEY
+[ -z "${KEY}" ] && KEY="$default"
+git config core.sshCommand "ssh -i $KEY"
+
