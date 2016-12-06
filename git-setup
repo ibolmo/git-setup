@@ -1,16 +1,20 @@
 #!/bin/bash
 
-if [ ! -d "./.git" ]; then
-  git init
-fi
-
 default="$(git config user.email)"
 read -e -p "Email? [$default]: " EMAIL
 [ -z "${EMAIL}" ] && EMAIL="$default"
-git config user.email $EMAIL
 
 default='~/.ssh/id_rsa'
 read -e -p "ssh key? [$default]: " KEY
 [ -z "${KEY}" ] && KEY="$default"
-git config core.sshCommand "ssh -i $KEY"
 
+REPO="$1"
+if [ -z "${REPO}" ]; then
+  if [ ! -d "./.git" ]; then
+    git init
+  fi
+  git config user.email $EMAIL
+  git config core.sshCommand "ssh -i $KEY"
+else
+  git clone $REPO -c user.email=$EMAIL -c core.sshCommand="ssh -i $KEY"
+fi
